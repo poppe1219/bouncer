@@ -160,6 +160,9 @@
 		// If not required, bail
 		if (!field.hasAttribute('required')) return false;
 
+		// If the value hasn't changed yet, avoid triggering distracting errors.
+		if (field.dataset.hasChanged !== 'true') return false;
+
 		// Handle checkboxes
 		if (field.type === 'checkbox') {
 			return !field.checked;
@@ -742,8 +745,21 @@
 			// Only run if the field is in a form to be validated
 			if (!event.target.form || !event.target.form.matches(selector)) return;
 
-			// Only run on fields with errors
-			if (!event.target.classList.contains(settings.fieldClass)) return;
+			// Track value changes, skip input validation of fields without errors.
+			if (!event.target.classList.contains(settings.fieldClass)) {
+				// Track field value change, avoid triggering distracting errors.
+				if (event.target.dataset.hasChanged !== 'true')) {
+					// Handle radio buttons
+					if (field.type === 'radio') {
+						Array.prototype.filter.call(event.target.form.querySelectorAll('[name="' + escapeCharacters(event.target.name) + '"]'), function (rb) {
+							rb.dataset.hasChanged = 'true';
+						});
+					} else {
+						event.target.dataset.hasChanged = 'true';
+					}
+				}
+				return; // Field has no errors, skip validation on input.
+			}
 
 			// Validate the field
 			publicAPIs.validate(event.target);
