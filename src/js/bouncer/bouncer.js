@@ -747,7 +747,7 @@
 
 			// Track value changes, skip input validation of fields without errors.
 			if (!event.target.classList.contains(settings.fieldClass)) {
-				// Track field value change, avoid triggering distracting errors.
+				// Track field value change, to avoid triggering distracting errors.
 				if (event.target.dataset.hasChanged !== 'true')) {
 					// Handle radio buttons
 					if (field.type === 'radio') {
